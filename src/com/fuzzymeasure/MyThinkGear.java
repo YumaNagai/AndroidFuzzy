@@ -41,22 +41,22 @@ public class MyThinkGear
 	                	
 	                	case TGDevice.STATE_CONNECTED:
 	                		deviceStatus = "TGDevice Connected...\n";
-	                		devicestate  = TGDevice.STATE_CONNECTING;
+	                		devicestate  = TGDevice.STATE_CONNECTED;
 	                	break;
 	                	
 	                	case TGDevice.STATE_NOT_FOUND:
 	                		deviceStatus = "Can't find...\n";
-	                		devicestate  = TGDevice.STATE_CONNECTING;
+	                		devicestate  = TGDevice.STATE_NOT_FOUND;
 	                	break;
 	                	
 	                	case TGDevice.STATE_NOT_PAIRED:
 	                		deviceStatus = "not paired...\n";
-	                		devicestate  = TGDevice.STATE_CONNECTING;
+	                		devicestate  = TGDevice.STATE_NOT_PAIRED;
 	                	break;
 	                	
 	                	case TGDevice.STATE_DISCONNECTED:
 	                		deviceStatus = "Disconnected mang...\n";
-	                		devicestate  = TGDevice.STATE_CONNECTING;
+	                		devicestate  = TGDevice.STATE_DISCONNECTED;
 	                	break;
 	        		}
 	        	break;
@@ -98,7 +98,7 @@ public class MyThinkGear
 	    timeStamp = nowtime = 0;
 	    stampupdate = true;
 	    nscount = 0;
-	    deviceStatus = "new MyThinkGearClass";
+	    deviceStatus = "";
 		adapter = BluetoothAdapter.getDefaultAdapter();	//defalutAdapter get
 		if(adapter == null) deviceStatus = "Bluetooth not available\n";
 		else tgDevice = new TGDevice(adapter, thinkgearHandler);
@@ -134,7 +134,7 @@ public class MyThinkGear
 		boolean state = false;
 		
 		//when connect Device
-		if( devicestate == TGDevice.STATE_CONNECTING && devicestate == TGDevice.STATE_CONNECTED)
+		if( devicestate == TGDevice.STATE_CONNECTING || devicestate == TGDevice.STATE_CONNECTED)
 		{
     		tgDevice.close();
     		state = true;

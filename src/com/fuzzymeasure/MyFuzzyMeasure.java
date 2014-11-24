@@ -15,7 +15,7 @@ public class MyFuzzyMeasure extends Activity
 	
 	//brain wave variable
 	private final int sampingRate = 512;		//samplingRate
-	private int measuretime = 4;				//measure time
+	
 	private MyThinkGear thinkgearDevice;		//thinkgear device 
 	private double wavedata[];					//brainwave data
 
@@ -32,15 +32,19 @@ public class MyFuzzyMeasure extends Activity
 	private int age;					//age number
 	private EditText ageText;			//age inputForm
 	private EditText secondText;		//exprimentTime inputForm
+	private int measuretime = 4;				//measure time
 
 	private Button expStartButton;
 
-		
 	//private device status
 	private Button connetButton;		//device connectbutton
 	private Button disconnectButton;	//device disconnectbutton
 	private Button analyzeButton;		//analyze button
 	private Button clearDataButton;		//clearDataButton
+	
+	//status boolean
+	private boolean isconnect;
+	
 	
 	@Override
     //call when Activity create
@@ -49,9 +53,8 @@ public class MyFuzzyMeasure extends Activity
         super.onCreate(bundle);
         thinkgearDevice = MyThinkGear.Load();		//create&init thinkGearDevice
         InitializeComponent();
+        isInputData(false);
     }
-	
-
     
     //content Initialize
 	private void InitializeComponent()
@@ -64,6 +67,7 @@ public class MyFuzzyMeasure extends Activity
 		
 		//device status content setting-------------------------------------
 		TableRow devicetable = new TableRow(this);
+		
 		TextView devicestatus = new TextView(this);
 		devicestatus.setText("DeviceStatus:");
 		devicestatus.setTextSize(25.0f);
@@ -76,7 +80,10 @@ public class MyFuzzyMeasure extends Activity
 			@Override
 			public void onClick(View v) 
 			{
-				// TODO Auto-generated method stub
+				//thinkgearDevice = MyThinkGear.Load();
+				thinkgearDevice.connectDevice();
+				statuslog.append(thinkgearDevice.getStatus());
+				isInputData(true);
 				
 			}
 		} );
@@ -89,7 +96,9 @@ public class MyFuzzyMeasure extends Activity
 			@Override
 			public void onClick(View v) 
 			{
-				
+				thinkgearDevice.disconnectDevice();
+				statuslog.append(thinkgearDevice.getStatus());
+				isInputData(false);
 			}
 		});
 		devicetable.addView(disconnectButton);
@@ -118,12 +127,12 @@ public class MyFuzzyMeasure extends Activity
 		slabel.setText("ê´ï :");
 		slabel.setTextSize(25.0f);
 		inputtable.addView(slabel);
-		ArrayAdapter<String> sexadapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item);
-		sexadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		sexadapter.add("íj");
-		sexadapter.add("èó");
+		ArrayAdapter<String> genderAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item);
+		genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		genderAdapter.add("íj");
+		genderAdapter.add("èó");
 		genderType = new Spinner(this);
-		genderType.setAdapter(sexadapter);
+		genderType.setAdapter(genderAdapter);
 		genderType.setSelection(0);
 		
 		//sexType.setLayoutParams(new LinearLayout.LayoutParams(WC, WC));
@@ -351,15 +360,25 @@ public class MyFuzzyMeasure extends Activity
 		statusLayout.addView(statuslog);
 		
 		layout.addView(statusLayout);
-		//----------------------------------------------------------------------
-		
+		//----------------------------------------------------------------------	
+	}
+	
+	
+	private void isInputData(boolean setis)
+	{
+		genderType.setEnabled(setis);
+		experimentType.setEnabled(setis);
+		ageText.setEnabled(setis);
+		secondText.setEnabled(setis);
+		ageText.setFocusableInTouchMode(setis);
+		secondText.setFocusableInTouchMode(setis);
 	}
     
     @Override
     //call Activity destroy
     public void onDestroy() 
     {
-    	
+    	thinkgearDevice.disconnectDevice();
         super.onDestroy();
     }
 
